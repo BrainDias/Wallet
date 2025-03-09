@@ -1,0 +1,48 @@
+services:
+  app:
+    build: .
+    container_name: app
+    ports:
+      - "8080:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/walletdb
+      SPRING_DATASOURCE_USERNAME: braindias
+      SPRING_DATASOURCE_PASSWORD: secret
+      SPRING_DATASOURCE_HIKARI_MAXIMUM-POOL-SIZE: 100
+      SPRING_DATASOURCE_HIKARI_MINIMUM-IDLE: 10
+      SPRING_DATASOURCE_HIKARI_IDLE-TIMEOUT: 30000
+      SPRING_DATASOURCE_HIKARI_MAX-LIFETIME: 1800000
+      SPRING_APPLICATION_NAME: Wallet
+      SPRING_LIQUIBASE_ENABLED: true
+      SPRING_LIQUIBASE_CHANGE-LOG: classpath:db/changelog/db.changelog-master.xml
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app_to_zoo
+  postgres:
+    image: 'postgres:latest'
+    container_name: postgres
+    environment:
+      POSTGRES_DB: walletdb
+      POSTGRES_USER: braindias
+      POSTGRES_PASSWORD: secret
+      POSTGRESQL_LOCK_TIMEOUT: "30000" # 30 секунд
+      POSTGRESQL_WORK_MEM: "64MB"
+      POSTGRESQL_MAX_LOCKS_PER_TRANSACTION: "128"
+      POSTGRESQL_AUTOVACUUM: "true"
+      POSTGRESQL_AUTOVACUUM_VACUUM_THRESHOLD: "5000"
+      POSTGRESQL_MAX_CONNECTIONS: "200"
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "user", "-d", "mydb" ]
+      interval: 10s  # Проверяем каждые 10 секунд
+      retries: 5     # Делаем 5 попыток
+      start_period: 5s # Ждём 5 секунд перед первой проверкой
+    restart: always
+    networks:
+      - app_to_zoo
+networks:
+  app_to_zoo:
+    driver: bridge
