@@ -28,7 +28,7 @@ public class WalletServiceTest {
     private WalletRepository walletRepository;
 
     @InjectMocks
-    private WalletService walletService;
+    private WalletServiceImpl walletService;
 
     static Wallet wallet;
     static UUID uuid;

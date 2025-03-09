@@ -1,6 +1,7 @@
 package org.testtask.wallet.controllers;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testtask.wallet.dtos.Transfer;
 import org.testtask.wallet.services.WalletService;
@@ -22,13 +24,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(WalletController.class)
-@Import(WalletControllerTest.ControllerTestConfiguration.class)
+//@Import(WalletControllerTest.ControllerTestConfiguration.class)
 public class WalletControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
+    @MockitoBean
     private WalletService walletService;
 
     @Test
@@ -38,7 +40,7 @@ public class WalletControllerTest {
         mockMvc.perform(post("/api/v1/wallet")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\": \"" + UUID.randomUUID() + "\", " +
-                                "\"OperationType\": \"WITHDRAW\", " +
+                                "\"operationType\": \"WITHDRAW\", " +
                                 "\"amount\": 1000}")
                 )
                 .andExpect(status().isAccepted());
@@ -62,17 +64,17 @@ public class WalletControllerTest {
         mockMvc.perform(post("/api/v1/wallet")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"walletId\": \"" + UUID.randomUUID() + "\", " +
-                                "\"OperationType\": \"WITHDRAW\", " +
+                                "\"operationType\": \"WITHDRAW\", " +
                                 "\"amount\": -100}")
                 )
                 .andExpect(status().isBadRequest());
     }
 
-    @TestConfiguration
-    static class ControllerTestConfiguration {
-        @Bean
-        public WalletService walletService() {
-            return Mockito.mock(WalletServiceImpl.class);
-        }
-    }
+//    @TestConfiguration
+//    static class ControllerTestConfiguration {
+//        @Bean
+//        public WalletService walletService() {
+//            return Mockito.mock(WalletServiceImpl.class);
+//        }
+//    }
 }
