@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: BrainDias
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: CREATE EXTENSION IF NOT EXISTS pgcrypto;
+        - createTable:
+            tableName: wallets
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  defaultValueComputed: gen_random_uuid()
+              - column:
+                  name: balance
+                  type: bigint
+        - insert:
+            tableName: wallets
+            columns:
+              - column: {name: id, valueComputed: fb6f759f-32fb-494e-8734-1b629ee118a0 }
+              - column: {name: balance, value: 500}
+        - insert:
+            tableName: wallets
+            columns:
+              - column: { name: id, value: f49398b5-d56e-4c1c-a071-2ee90c01fc4e }
+              - column: { name: balance, value: 1000 }
+        - insert:
+            tableName: wallets
+            columns:
+              - column: { name: id, value: 6f956c51-ef52-490c-93bf-fb15947ed8b8 }
+              - column: { name: balance, value: 10000 }
+        - insert:
+            tableName: wallets
+            columns:
+              - column: { name: id, value: 04b1d5ba-d642-479b-8e78-f7cd93bbf45e }
+              - column: { name: balance, value: 100000 }

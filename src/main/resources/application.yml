@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: Wallet
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: false
+  datasource:
+    url: jdbc:postgresql://postgres:5432/walletdb
+    username: braindias
+    password: secret
+    hikari:
+      #Чем чаще соединения перерабатываются - закрываются и открываются новые, тем больше задержка и вероятность
+      #роллбэка
+      maximum-pool-size: 50
+      minimum-idle: 10  # Минимальное количество соединений
+      idle-timeout: 30000   # 30 секунд перед закрытием неиспользуемых соединений
+      max-lifetime: 1800000 # 30 минут жизни соединения
+  transaction:
+    default-timeout: 60 # 60 секунд
+
